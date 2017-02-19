@@ -1,3 +1,17 @@
+import sys
+
+pyVersion = sys.version_info[0]
+pySubVersion = sys.version_info[1]
+message = '\n********\nYou are currently running Python version {0}.{1}\n********\n'
+
+print(message.format(pyVersion,pySubVersion))
+
+if sys.version_info < (3, 0):
+    raise ValueError("you must use python 3.x")
+
+else:
+    print("good\n")
+
 guessList = []
 tempAnswer = ''
 answer = []
@@ -8,11 +22,13 @@ done = False
 
 print('Starting game!')
 
-'''
+#to allow the user to enter a secret word, uncomment here
 word = input('Enter a secret word: ')
 print('\n' * 100)
-'''
-word = 'steinsgate'
+
+#to hardcode a single word, uncomment here
+#word = 'steinsgate'
+
 for i in word:
     tempAnswer = tempAnswer + '_'
     answer.append('_')
@@ -25,6 +41,7 @@ while done == False:
 
         print('%s' % ' '.join(map(str, strike)))
         letter = input('Guess a letter!\n')
+        print('\n')
 
         g = 0
         t = 0
@@ -46,7 +63,7 @@ while done == False:
                 g = g + 1
 
         if t == 0:
-            strike.append("[X]")
+            strike.append('[X]')
         tempAnswer = answer
 
         print('%s' % ' '.join(map(str, answer)))
