@@ -81,4 +81,5 @@ while done == False:
             print('that was bad!')
         else:
             print('TERRIBLE!!')
+        input("\n\npress any key to exit...")
         done = True
