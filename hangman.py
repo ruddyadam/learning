@@ -41,26 +41,26 @@ while done == False:
 
         print('%s' % ' '.join(map(str, strike)))
         letter = input('Guess a letter!\n')
+        if not letter in guessList:
+            guessList.append(letter)
+
+        #print('guessed letters: ' + )
         print('\n')
 
-        g = 0
-        t = 0
+        g = 0 #used to iterate through ther letters of the secret word
+        t = 0 #used to find if the letter input was in the secret word
         answer =[]
 
         for i in tempAnswer:
             if i == '_':
                 if letter == word[g]:
                     answer.append(letter)
-                    guessList.append(letter)
-                    g = g + 1
-                    t = t + 1
+                    t = t + 1 #this iterates if a new letter was found in the puzzle
                 else:
                     answer.append('_')
-                    guessList.append(letter)
-                    g = g + 1
             else:
                 answer.append(i)
-                g = g + 1
+            g = g + 1
 
         if t == 0:
             strike.append('[X]')
@@ -78,8 +78,8 @@ while done == False:
         elif len(strike) < 11:
             print("ok, that's ok.")
         elif len(strike) < 21:
-            print('that was bad!')
+            print('That was bad!')
         else:
-            print('TERRIBLE!!')
+            print('YOU ARE TERRIBLE!!')
         input("\n\npress any key to exit...")
         done = True

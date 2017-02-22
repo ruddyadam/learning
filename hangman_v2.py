@@ -1,7 +1,9 @@
 import random
 
-def generateBlanks():
-
+def showWord(word):
+    for i in word:
+        print(i, " ", end="")
+    print("")
 
 def getRandomWord():
     words = ["pizza", "cheese", "apples"]
@@ -13,12 +15,18 @@ def playWordGame():
     maxStrikes = 3
     playing = True
 
+def getGuess():
+    print("Enter a letter: ")
+    return input()
+
     word = getRandomWord()
     #print(getRandomWord())
     blankedWord = "_" * len(word)
 
-
     while playing:
+        showWord(blankedWord)
+        letter = getGuess()
+
         strikes += 1
 
         if(strikes >= maxStrikes):
