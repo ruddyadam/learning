@@ -63,7 +63,7 @@ while done == False:
             g = g + 1
 
         if t == 0:
-            strike.append('[X]')
+            strike.append('['+letter+']') #caleb suggested this change to keep track of letters!!  2-27-17
         tempAnswer = answer
 
         print('%s' % ' '.join(map(str, answer)))
