@@ -12,16 +12,16 @@ black = (0,0,0)
 yellow = (255,255,0)
 
 x = 100
-y = 100
 dx = 3
+y = 100
 dy = 3
 
 #speed = dx = dy = 3
 
 screen = pygame.display.set_mode((display_width,display_height))
-pygame.mixer.init()
-pygame.mixer.music.load('Future City Records - FCR Compilation Vol. X - 01 Arwelone - Everlasting Journey.ogg')
-pygame.mixer.music.play()
+#pygame.mixer.init()
+#pygame.mixer.music.load('Future City Records - FCR Compilation Vol. X - 01 Arwelone - Everlasting Journey.ogg')
+#pygame.mixer.music.play()
 animation_timer = pygame.time.Clock()
 
 #while pygame.mixer.get_busy():
@@ -98,6 +98,7 @@ while not endProgram:
 
         if x < 0 or x > display_width - ellipse_width:
             dx *= -1
+
     print (up,down,left,right)
     #counter += 1
     #print(counter)
