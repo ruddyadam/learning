@@ -3,8 +3,8 @@ import pygame
 display_width = 800
 display_height = 600
 FPS = 30
-ell_wid = 40
-ell_hei = 40
+ellipse_width = 40
+ellipse_height = 40
 
 white = (255,255,255)
 blue = (0,0,255)
@@ -55,27 +55,27 @@ while not endProgram:
 
     if pygame.mouse.get_pressed() == (False, False, True):
         #makes center of ball snap to cursor
-        x = pygame.mouse.get_pos()[0] - ell_wid/2
-        y = pygame.mouse.get_pos()[1] - ell_hei/2
+        x = pygame.mouse.get_pos()[0] - ellipse_width/2
+        y = pygame.mouse.get_pos()[1] - ellipse_height/2
 
     elif pygame.mouse.get_pressed() == (True, False, False):
         #ball will follow cursor
-        if x + ell_wid/2 < pos[0]:
+        if x + ellipse_width/2 < pos[0]:
             x += dx
             right = True
             left = False
 
-        elif x + ell_wid/2 > pos[0]:
+        elif x + ellipse_width/2 > pos[0]:
             x -= dx
             left = True
             right = False
 
-        if y + ell_hei/2 < pos[1]:
+        if y + ellipse_height/2 < pos[1]:
             y += dy
             down = True
             up = False
 
-        if y + ell_hei/2 > pos[1]:
+        if y + ellipse_height/2 > pos[1]:
             y -= dy
             up = True
             down = False
@@ -93,17 +93,17 @@ while not endProgram:
             y += dy
 
         #bounces ball off the walls # this is problematical as I need to change up down lkeft right booleans
-        if y < 0 or y > display_height - ell_hei:
+        if y < 0 or y > display_height - ellipse_height:
             dy *= -1
 
-        if x < 0 or x > display_width - ell_wid:
+        if x < 0 or x > display_width - ellipse_width:
             dx *= -1
     print (up,down,left,right)
     #counter += 1
     #print(counter)
     screen.fill(blue)
 
-    pygame.draw.ellipse(screen, (white), (x,y,ell_wid,ell_hei))
+    pygame.draw.ellipse(screen, (white), (x,y,ellipse_width,ellipse_height))
 
     animation_timer.tick(FPS)
 
