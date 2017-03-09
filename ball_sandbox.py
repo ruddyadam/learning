@@ -116,11 +116,15 @@ def move_dot(dot_object):
 #mouse button up to release the ball at the speed and direction of the mouse
 #decay the ball speed
 
+#creates a list whose contents is d1, d2, d3... dn, where n is number_of_dots
 dot_list = []
 for i in range(0, number_of_dots):
     dot_list.append('d'+str(i))
 
+#creates a list of objects from dot_list
 dot_objects = [Dot() for dot_item in dot_list]
+
+#instantiates ball
 ball = Ball()
 
 pygame.mouse.set_visible(mouse_visible)

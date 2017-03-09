@@ -46,7 +46,6 @@ else:
 #counter = 0
 while not endProgram:
 
-
     for e in pygame.event.get():
         if e.type == pygame.QUIT:
             endProgram = True
