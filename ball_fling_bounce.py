@@ -2,6 +2,7 @@
 
 import pygame
 import random
+import math
 
 #song that will play
 song = 'SIDwave_-_Kohinoor_future_version-SIDwave_-_Kohino.ogg'
@@ -18,35 +19,49 @@ fps = 30
 
 cursor_start_pos = (display_width / 2, display_height / 2)
 
-ball_is_a_circle = False
+ball_is_a_circle = True
 ball_radius = 20
 ball_width = 40
 ball_height = 40
+
+dot_is_a_circle = False
+dot_radius = 1
+dot_width = 2
+dot_height = 2
+number_of_dots = 500
 
 pygame.init()
 screen = pygame.display.set_mode((display_width,display_height)) #create window
 pygame.display.set_caption('Ball Fling and Bounce') #set caption
 clock = pygame.time.Clock() #set clock variable for FPS
 
-
 #plays music
 pygame.mixer.init()
 pygame.mixer.music.load(song)
 pygame.mixer.music.play()
 
+
+def distance_to_closest_dot_point(test_tuple):
+    dist_x = ball.x - test_tuple[0]
+    dist_y = ball.y - test_tuple[1]
+    distance = math.sqrt((dist_x * dist_x) + (dist_y * dist_y))
+    return distance
+
 #create circle (ball)
 class Ball():
 
-    #position and movement variables
+    #ball position and movement variables
     x = 100
     y = 100
-    dx = 2
-    dy = 2
+    dx = 10
+    dy = 10
+    speed_decay_counter = 0
+    speed_decay_rate = fps
 
     #def __init__(self):
 
 
-    def draw_ball(self): #ball currently locked to cursor
+    def draw_ball(self):
         if ball_is_a_circle == True:
             pygame.draw.circle(screen, white, (self.x, self.y), ball_radius, 0)
         else:
@@ -57,15 +72,126 @@ class Ball():
         self.y += self.dy
 
     def bounce(self):
-        if self.y < 0 or self.y > display_height - ball_height:
+        if ball_is_a_circle == True:
+            if self.y - ball_radius < 0 or self.y + ball_radius > display_height:
+                self.dy *= -1
+
+            if self.x - ball_radius < 0 or self.x + ball_radius > display_width:
+                self.dx *= -1
+        else:
+            if self.y < 0 or self.y > display_height - ball_height:
+                self.dy *= -1
+
+            if self.x < 0 or self.x > display_width - ball_width:
+                self.dx *= -1
+    def speed_decay(self):
+        if not self.dx == 0 or not self.dy == 0:
+            if self.speed_decay_counter < self.speed_decay_rate:
+                self.speed_decay_counter += 1
+            else:                   #bring the dx and dy closer to 0
+                if self.dx < 0:
+                    self.dx += 1
+                elif self.dx > 0:
+                    self.dx -= 1
+
+                if self.dy < 0:
+                    self.dy += 1
+                elif self.dy > 0:
+                    self.dy -= 1
+
+                self.speed_decay_counter = 0
+
+class Dot():
+
+    x = 0
+    y = 0
+    dx = 0
+    dy = 0
+    speed_decay_counter = 0
+    speed_decay_rate = fps
+
+    def __init__(self):
+        self.x = random.randint(2, (display_width - 2))
+        self.y = random.randint(2, (display_height - 2))
+
+    def draw_dot(self):
+        if dot_is_a_circle == True:
+            pygame.draw.circle(screen, white, (self.x, self.y), dot_radius, 0)
+        else:
+            pygame.draw.rect(screen, white, (self.x, self.y, dot_width, dot_height), 0)
+
+    def update_position(self):
+        self.x += self.dx
+        self.y += self.dy
+
+    def bounce(self):
+        if self.y < 0 or self.y > display_height - dot_height:
             self.dy *= -1
 
-        if self.x < 0 or self.x > display_width - ball_width:
+        if self.x < 0 or self.x > display_width - dot_width:
             self.dx *= -1
+
+    def dot_is_rect_collide(self): #rectangle/rectlangle
+        pass
+
+    # closest edge of dot to ball
+    def closest_dot_edge(self):
+        test_x = self.x
+        test_y = self.y
+
+        if ball.x < self.x:
+            test_x = self.x                 # dot left edge is closest
+        elif ball.x > self.x + dot_width:
+            test_x = self.x + dot_width     # dot right edge is closest
+
+        if ball.y < self.y:
+            test_y = self.y                 # top edge is closest
+        elif ball.y > self.y + dot_height:
+            test_y = self.y + dot_height    # bottom edge is closest
+
+        test_tuple = (test_x, test_y)
+        return test_tuple
+
+    def collision(self):
+        if distance_to_closest_dot_point(self.closest_dot_edge()) <= ball_radius:
+            return True
+        else:
+            return False
+
+    def set_deflect_direction(self):
+        self.dx = self.x - ball.x
+        self.dy = self.y - ball.y
+
+    def speed_decay(self):
+        if not self.dx == 0 or not self.dy == 0:
+            if self.speed_decay_counter < self.speed_decay_rate:
+                self.speed_decay_counter += 1
+            else:                   #bring the dx and dy closer to 0
+                if self.dx < 0:
+                    self.dx += 1
+                elif self.dx > 0:
+                    self.dx -= 1
+
+                if self.dy < 0:
+                    self.dy += 1
+                elif self.dy > 0:
+                    self.dy -= 1
+
+                self.speed_decay_counter = 0
 
 quitGame = False
 pygame.mouse.set_pos(cursor_start_pos)
-ball = Ball()  #creates an initial ball
+ball = Ball()   #creates one ball
+
+#creates a list whose contents is d1, d2, d3... dn, where n is number_of_dots
+dot_list = []
+for i in range(0, number_of_dots):
+    dot_list.append('d'+str(i))
+
+#creates a list of objects from dot_list
+dot_objects = [Dot() for dot_item in dot_list]
+for dot_object in dot_objects:
+    print(dot_objects)
 
 #main loop
 while not quitGame:
@@ -77,7 +203,7 @@ while not quitGame:
         #if pygame.key.get_pressed() == pygame.K_SPACE:
         #    ball.dx, ball_dy = 0
 
-        print(event)  # prints key/mouse events in the console
+        #print(event)  # prints key/mouse events in the console
 
     if not pygame.mixer.music.get_busy():
         pygame.mixer.music.play()
@@ -86,8 +212,20 @@ while not quitGame:
 
     # will lock ball to mouse cursor if left click
     if pygame.mouse.get_pressed() == (True, False, False):
-        if ball_is_a_circle == False:
+        #print('ball x: ' + str(float(ball.x)))
+        #print('ball y: ' + str(float(ball.y)))
 
+        if ball_is_a_circle == True:
+            ball.x = pygame.mouse.get_pos()[0]
+            ball.y = pygame.mouse.get_pos()[1]
+
+            #print('ball x: ' + str(float(ball.x)))
+            #print('ball y: ' + str(float(ball.y)))
+
+            # moving the mnouse and letting go of the ball gives locks that speed and direction to the ball
+            ball.dx, ball.dy = pygame.mouse.get_rel()
+
+        else:
             # left-clicking the mouse on the ball locks the ball to the cursor
             ball.x = pygame.mouse.get_pos()[0] - ball_width / 2
             ball.y = pygame.mouse.get_pos()[1] - ball_height / 2
@@ -95,19 +233,32 @@ while not quitGame:
             # moving the mnouse and letting go of the ball gives locks that speed and direction to the ball
             ball.dx, ball.dy = pygame.mouse.get_rel()
 
-        else:
-            pass
-
     #if pygame.mouse.get_pressed() == (False, False, True):
     #    ball = Ball()
 
     screen.fill(black)
     ball.update_position()
-
-
     ball.draw_ball()
     ball.bounce()   #ball will bounce off walls
-    clock.tick(60)
+    ball.speed_decay()
+
+    #screen.lock()
+    for dot_object in dot_objects:
+        if dot_object.collision():
+            dot_object.set_deflect_direction()
+
+        dot_object.update_position()
+        dot_object.draw_dot()
+        dot_object.bounce()
+        dot_object.speed_decay()   #slow down
+
+        # to see what's happening with the stragglers at the end that won't stop
+        #if not dot_object.dx == 0 or not dot_object.dy == 0:
+        #    print(dot_object.dx,dot_object.dy)
+
+    #screen.unlock()
+
+    clock.tick(fps)
     pygame.display.update()
 
 
