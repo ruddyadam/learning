@@ -103,19 +103,21 @@ class Ball():
 
 class Dot():
 
-    x = 0
-    y = 0
-    dx = 0
-    dy = 0
-    speed_decay_counter = 0
-    speed_decay_rate = fps
+    x = 0   #position x
+    y = 0   #position y
+    dx = 0  #speed and direction x
+    dy = 0  #speed and direction y
+    speed_decay_counter = 0 #keeps track of cycles to know when to slow by 1 unit
+    speed_decay_rate = fps  #sets the amount of cycles where speed will decay by 1
+    #amount_to_decay_by = 1 #TODO: fix so amount can be any amount, but must reach 0 in decay method below
+
 
     def __init__(self):
-        self.x = random.randint(2, (display_width - 2))
+        self.x = random.randint(2, (display_width - 2)) #to spawn each object in a random location
         self.y = random.randint(2, (display_height - 2))
 
     def draw_dot(self):
-        if dot_is_a_circle == True:
+        if dot_is_a_circle == True: #
             pygame.draw.circle(screen, white, (self.x, self.y), dot_radius, 0)
         else:
             pygame.draw.rect(screen, white, (self.x, self.y, dot_width, dot_height), 0)
@@ -158,9 +160,15 @@ class Dot():
         else:
             return False
 
+    #TODO: set_deflect_direction() needs to be fixed
+    # the speed of the deflection is dependent on the radius of the circle
+    # dx, dy is currently not only direction, but speed.
+    # Fix so direction and speed are separate, direction to be slope, and speed on collision
+    # to be double ball relative speed.  This should also mean fixing speed and decay in general
+
     def set_deflect_direction(self):
-        self.dx = self.x - ball.x
-        self.dy = self.y - ball.y
+        self.dx = self.x - ball.x # + ball x relative
+        self.dy = self.y - ball.y # + ball y relative
 
     def speed_decay(self):
         if not self.dx == 0 or not self.dy == 0:
@@ -184,14 +192,17 @@ pygame.mouse.set_pos(cursor_start_pos)
 ball = Ball()   #creates one ball
 
 #creates a list whose contents is d1, d2, d3... dn, where n is number_of_dots
+#TODO: the below may be unnnecessary.  put range in the dot_objects list comprehension instead
 dot_list = []
 for i in range(0, number_of_dots):
     dot_list.append('d'+str(i))
 
 #creates a list of objects from dot_list
 dot_objects = [Dot() for dot_item in dot_list]
-for dot_object in dot_objects:
-    print(dot_objects)
+
+#prints the list of dot objects, for testing.
+#for dot_object in dot_objects:
+#    print(dot_objects)
 
 #main loop
 while not quitGame:
@@ -261,10 +272,12 @@ while not quitGame:
     clock.tick(fps)
     pygame.display.update()
 
+#next step:
+#TODO: dots bounce off each other
 
 #next step:
-#space bar stops the ball
+#TODO: space bar stops the ball
 
 #next step:
-#each time you click not on the ball, it creates a new ball
-#each ball bounces off the walls and other balls
+#TODO: each time you click not on the ball, it creates a new ball
+#TODO: each ball bounces off the walls and other balls
