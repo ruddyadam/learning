@@ -60,7 +60,6 @@ class Ball():
 
     #def __init__(self):
 
-
     def draw_ball(self):
         if ball_is_a_circle == True:
             pygame.draw.circle(screen, white, (self.x, self.y), ball_radius, 0)
@@ -116,6 +115,10 @@ class Dot():
         self.x = random.randint(2, (display_width - 2)) #to spawn each object in a random location
         self.y = random.randint(2, (display_height - 2))
 
+    #TODO: gets the id of this object (that unique name in the dot_objects list)
+    def get_generator_id(self):
+        pass
+
     def draw_dot(self):
         if dot_is_a_circle == True: #
             pygame.draw.circle(screen, white, (self.x, self.y), dot_radius, 0)
@@ -133,11 +136,8 @@ class Dot():
         if self.x < 0 or self.x > display_width - dot_width:
             self.dx *= -1
 
-    def dot_is_rect_collide(self): #rectangle/rectlangle
-        pass
-
     # closest edge of dot to ball
-    def closest_dot_edge(self):
+    def closest_dot_edge_to_ball(self):
         test_x = self.x
         test_y = self.y
 
@@ -154,14 +154,26 @@ class Dot():
         test_tuple = (test_x, test_y)
         return test_tuple
 
-    def collision(self):
-        if distance_to_closest_dot_point(self.closest_dot_edge()) <= ball_radius:
+    # rectangle/rectangle collision test
+    def collision_with_dot(self, dot_object):
+
+        if (self.x + dot_width >= dot_object.x) and \
+           (self.x <= dot_object.x + dot_width) and \
+           (self.y + dot_height >= dot_object.y) and \
+           (self.y <= dot_object.y + dot_height):
+            return True
+        else:
+            return False
+
+    #rectangle / circle collision test
+    def collision_with_ball(self):
+        if distance_to_closest_dot_point(self.closest_dot_edge_to_ball()) <= ball_radius:
             return True
         else:
             return False
 
     #TODO: set_deflect_direction() needs to be fixed
-    # the speed of the deflection is dependent on the radius of the circle
+    # The speed of the deflection is dependent on the radius of the circle
     # dx, dy is currently not only direction, but speed.
     # Fix so direction and speed are separate, direction to be slope, and speed on collision
     # to be double ball relative speed.  This should also mean fixing speed and decay in general
@@ -255,8 +267,10 @@ while not quitGame:
 
     #screen.lock()
     for dot_object in dot_objects:
-        if dot_object.collision():
+        if dot_object.collision_with_ball():
             dot_object.set_deflect_direction()
+            #if not {generator ID} == dot_object.get_genrator_id()
+            #TODO; figure out how to test each dot against the rest of the dots but not against itself
 
         dot_object.update_position()
         dot_object.draw_dot()
