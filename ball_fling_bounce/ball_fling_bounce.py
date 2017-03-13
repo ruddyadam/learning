@@ -31,9 +31,9 @@ dot_height = 2
 number_of_dots = 500
 
 pygame.init()
-screen = pygame.display.set_mode((display_width,display_height)) #create window
-pygame.display.set_caption('Ball Fling and Bounce') #set caption
-clock = pygame.time.Clock() #set clock variable for FPS
+screen = pygame.display.set_mode((display_width,display_height))    #create window
+pygame.display.set_caption('Ball Fling and Bounce')                 #set caption
+clock = pygame.time.Clock()                                         #set clock variable for FPS
 
 #plays music
 pygame.mixer.init()
@@ -83,6 +83,8 @@ class Ball():
 
             if self.x < 0 or self.x > display_width - ball_width:
                 self.dx *= -1
+
+    #TODO: perhaps decay doesnt need to be in whole intergers, can be reduced by a fraction or a % ?
     def speed_decay(self):
         if not self.dx == 0 or not self.dy == 0:
             if self.speed_decay_counter < self.speed_decay_rate:
